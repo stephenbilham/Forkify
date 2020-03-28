@@ -54,6 +54,8 @@ export default class Recipe {
       "pound"
     ];
 
+    const units = [...unitsShort, "kg", "g"];
+
     const newIngredients = this.ingredients.map(el => {
       //uniform units
       let ingredient = el.toLowerCase();
@@ -64,7 +66,7 @@ export default class Recipe {
       ingredient = ingredient.replace(/ *\([^)]*\) */g, " ");
       // 3) parse ingredients into count, unit and ingredients
       const arrIng = ingredient.split(" ");
-      const unitIndex = arrIng.findIndex(el2 => unitsShort.includes(el2));
+      const unitIndex = arrIng.findIndex(el2 => units.includes(el2));
 
       let objIng;
       if (unitIndex > -1) {
