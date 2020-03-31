@@ -18,7 +18,8 @@ import { elements, renderLoader, clearLoader } from "./views/base";
 const state = {
   //
 };
-window.state = state;
+
+// inital start
 
 /*SEARCH CONTROLLER*/
 const controlSearch = async () => {
@@ -30,7 +31,6 @@ const controlSearch = async () => {
     state.search = new Search(query);
 
     // 3) prepare UI for results
-    searchView.clearInput();
     searchView.clearResults();
     renderLoader(elements.searchRes);
     try {
@@ -41,7 +41,7 @@ const controlSearch = async () => {
       clearLoader();
       searchView.renderResults(state.search.result);
     } catch (err) {
-      alert("something went wrong with search...");
+      alert("sorry, you can only search pizza and pasta :(");
       clearLoader();
     }
   }
@@ -119,10 +119,6 @@ const controlList = () => {
   });
 };
 
-//TESTING
-state.likes = new Likes();
-likesView.toggleLikeMenu(state.likes.getNumLikes());
-
 /*LIKE CONTROLLER*/
 const controlLike = () => {
   if (!state.likes) state.likes = new Likes();
@@ -151,7 +147,7 @@ const controlLike = () => {
     //remove like from the UI list
     likesView.deleteLike(currentID);
   }
-  likesView.toggleLikeMenu(state.likes.likes.length);
+  likesView.toggleLikeMenu(state.likes.getNumLikes());
 };
 
 // handle delete and update list item events
@@ -171,6 +167,17 @@ elements.shopping.addEventListener("click", e => {
     const val = parseFloat(e.target.value, 10);
     state.list.updateCount(id, val);
   }
+});
+
+//Restore liked recipes on page reload
+window.addEventListener("load", () => {
+  state.likes = new Likes();
+  //Restore likes
+  state.likes.readStorage();
+  //Toggle the like menu button
+  likesView.toggleLikeMenu(state.likes.getNumLikes());
+  //render the existing likes
+  state.likes.likes.forEach(like => likesView.renderLike(like));
 });
 
 //handling recipe button clicks
@@ -193,5 +200,3 @@ elements.recipe.addEventListener("click", e => {
     controlLike();
   }
 });
-
-window.l = new List();
